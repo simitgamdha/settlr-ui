@@ -48,14 +48,17 @@ export default function ForgotPassword() {
                             </Link>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} noValidate className="space-y-4">
                             <Input
                                 label="Email"
                                 name="email"
                                 type="email"
                                 placeholder="m@example.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (error) setError('');
+                                }}
                                 error={error}
                                 className="bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                             />

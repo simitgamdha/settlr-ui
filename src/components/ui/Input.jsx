@@ -1,10 +1,12 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useId, useState } from 'react';
 import { cn } from '../../utils/cn';
 import { Eye, EyeOff } from 'lucide-react';
 
-export const Input = forwardRef(({ className, label, error, type, ...props }, ref) => {
+export const Input = forwardRef(({ className, label, error, type, id, name, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
+    const autoId = useId();
+    const inputId = id || name || autoId;
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -15,12 +17,17 @@ export const Input = forwardRef(({ className, label, error, type, ...props }, re
     return (
         <div className="w-full space-y-2">
             {label && (
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700">
+                <label
+                    htmlFor={inputId}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700"
+                >
                     {label}
                 </label>
             )}
             <div className="relative">
                 <input
+                    id={inputId}
+                    name={name}
                     type={inputType}
                     className={cn(
                         "flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
