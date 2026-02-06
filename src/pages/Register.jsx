@@ -5,6 +5,7 @@ import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardHeader } from '../components/ui/Card';
 import { AuthLayout } from '../components/layouts/AuthLayout';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -61,6 +62,7 @@ export default function Register() {
         try {
             await register(formData.name, formData.email, formData.password);
             navigate('/dashboard');
+            toast.success('Account created successfully.');
         } catch (error) {
             setErrors({ root: error?.message || 'Registration failed. Please try again.' });
         } finally {
@@ -70,11 +72,11 @@ export default function Register() {
 
     return (
         <AuthLayout>
-            <Card className="p-8 shadow-xl border-gray-100/50 backdrop-blur-sm bg-white/95">
+            <Card className="p-8 shadow-xl glass-panel text-slate-100">
                 <CardHeader className="pb-6">
                     <div className="flex flex-col space-y-2 text-center">
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Get Started</h1>
-                        <p className="text-gray-500">
+                        <h1 className="text-3xl font-bold tracking-tight text-white">Get Started</h1>
+                        <p className="text-slate-400">
                             Create your account to start sharing expenses
                         </p>
                     </div>
@@ -88,6 +90,7 @@ export default function Register() {
                             value={formData.name}
                             onChange={handleChange}
                             error={errors.name}
+                            className="bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                         />
                         <Input
                             label="Email"
@@ -97,6 +100,7 @@ export default function Register() {
                             value={formData.email}
                             onChange={handleChange}
                             error={errors.email}
+                            className="bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                         />
                         <Input
                             label="Password"
@@ -105,16 +109,17 @@ export default function Register() {
                             value={formData.password}
                             onChange={handleChange}
                             error={errors.password}
+                            className="bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                         />
                         {errors.root && (
-                            <p className="text-sm text-red-500 text-center">{errors.root}</p>
+                            <p className="text-sm text-rose-400 text-center">{errors.root}</p>
                         )}
-                        <Button type="submit" className="w-full" isLoading={isLoading}>
+                        <Button type="submit" className="w-full bg-gradient-to-r from-accent-pink to-accent-purple text-white hover:opacity-90" isLoading={isLoading}>
                             Sign Up
                         </Button>
-                        <div className="text-center text-sm text-gray-500">
+                        <div className="text-center text-sm text-slate-400">
                             Already have an account?{' '}
-                            <Link to="/login" className="text-brand-dark font-semibold hover:underline">
+                            <Link to="/login" className="text-accent-pink font-semibold hover:underline">
                                 Login
                             </Link>
                         </div>

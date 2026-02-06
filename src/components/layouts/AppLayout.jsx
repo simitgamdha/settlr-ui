@@ -8,6 +8,9 @@ import {
     CircleDollarSign,
     LogOut,
     Bell,
+    UserCircle2,
+    Search,
+    BellDot,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useEffect, useState } from 'react';
@@ -43,22 +46,22 @@ export function AppLayout({ children }) {
         : 0;
 
     return (
-        <div className="min-h-screen bg-background text-gray-900">
-            <div className="flex">
-                <aside className="hidden md:flex md:w-64 lg:w-72 flex-col border-r border-gray-200 bg-white/90 backdrop-blur-md">
+        <div className="h-screen app-bg text-slate-100 overflow-hidden">
+            <div className="flex h-full">
+                <aside className="hidden md:flex md:w-64 lg:w-72 flex-col border-r border-white/10 bg-ink-900/90 backdrop-blur-md sticky top-0 h-full">
                     <div className="px-6 py-6">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-2xl bg-brand-dark text-white grid place-items-center shadow-lg">
+                            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-accent-purple to-accent-pink text-white grid place-items-center shadow-lg">
                                 <CircleDollarSign className="h-5 w-5" />
                             </div>
                             <div>
-                                <p className="text-sm uppercase tracking-[0.2em] text-gray-400">Settlr</p>
-                                <p className="text-lg font-semibold text-gray-900">Expense Hub</p>
+                                <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Settlr</p>
+                                <p className="text-lg font-semibold text-white">Expense Hub</p>
                             </div>
                         </div>
                     </div>
 
-                    <nav className="flex-1 px-4 space-y-1">
+                    <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             return (
@@ -69,8 +72,8 @@ export function AppLayout({ children }) {
                                         cn(
                                             'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-colors',
                                             isActive
-                                                ? 'bg-brand-dark text-white shadow-sm'
-                                                : 'text-gray-600 hover:bg-gray-100'
+                                                ? 'bg-gradient-to-r from-accent-purple/70 to-accent-pink/70 text-white shadow-sm'
+                                                : 'text-slate-400 hover:bg-white/5 hover:text-white'
                                         )
                                     }
                                 >
@@ -82,55 +85,77 @@ export function AppLayout({ children }) {
                     </nav>
 
                     <div className="px-6 pb-6 pt-4">
-                        <div className="rounded-2xl bg-gradient-to-br from-brand-dark to-indigo-900 text-white p-4 space-y-3 shadow-lg">
-                            <p className="text-xs uppercase tracking-[0.2em] text-indigo-200">
+                        <div className="rounded-2xl bg-gradient-to-br from-accent-purple/80 to-accent-blue/80 text-white p-4 space-y-3 shadow-lg">
+                            <p className="text-xs uppercase tracking-[0.2em] text-white/70">
                                 Net Balance
                             </p>
                             <p className="text-3xl font-semibold">{formatCurrency(netBalance)}</p>
-                            <p className="text-xs text-indigo-200">
+                            <p className="text-xs text-white/70">
                                 {netBalance >= 0 ? 'You are owed more than you owe.' : 'You owe more than you are owed.'}
                             </p>
                         </div>
                     </div>
                 </aside>
 
-                <div className="flex-1">
-                    <header className="sticky top-0 z-20 flex flex-col gap-4 border-b border-gray-200 bg-white/80 px-4 py-4 backdrop-blur-md md:px-8">
+                <div className="flex-1 flex flex-col h-full">
+                    <header className="sticky top-0 z-20 flex flex-col gap-4 border-b border-white/10 bg-ink-900/80 px-4 py-4 backdrop-blur-md md:px-8">
                         <div className="flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3 md:hidden">
-                                <div className="h-10 w-10 rounded-2xl bg-brand-dark text-white grid place-items-center">
+                                <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-accent-purple to-accent-pink text-white grid place-items-center">
                                     <CircleDollarSign className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Settlr</p>
-                                    <p className="text-sm font-semibold text-gray-900">Expense Hub</p>
+                                    <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Settlr</p>
+                                    <p className="text-sm font-semibold text-white">Expense Hub</p>
                                 </div>
                             </div>
-                            <div className="hidden md:flex items-center gap-3 text-sm text-gray-500">
-                                <Bell className="h-4 w-4" />
-                                <span>2 pending settles</span>
+                            <div className="hidden md:flex flex-1 items-center gap-3 max-w-md">
+                                <div className="relative w-full">
+                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search expenses, groups, members"
+                                        className="h-10 w-full rounded-full bg-ink-800/80 border border-white/10 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-accent-purple/60"
+                                    />
+                                </div>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Link to="/groups/1">
-                                    <Button size="sm">New Expense</Button>
+                                <button className="hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-ink-800/70 border border-white/10 text-slate-300 hover:text-white">
+                                    <BellDot className="h-5 w-5" />
+                                </button>
+                                <Link to="/expenses">
+                                    <Button
+                                        size="sm"
+                                        className="bg-gradient-to-r from-accent-pink to-accent-purple text-white hover:opacity-90"
+                                    >
+                                        New Expense
+                                    </Button>
                                 </Link>
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    className="hidden sm:inline-flex"
-                                    onClick={() => {
-                                        logout();
-                                        navigate('/login');
-                                    }}
-                                >
-                                    <LogOut className="mr-2 h-4 w-4" />
-                                    Sign Out
-                                </Button>
+                                <div className="hidden sm:flex items-center gap-3">
+                                    <Link to="/profile" className="flex items-center gap-2 rounded-full border border-white/10 bg-ink-800/70 px-3 py-1.5 text-sm text-slate-200 hover:border-white/20 transition-colors">
+                                        <div className="h-7 w-7 rounded-full bg-gradient-to-br from-accent-blue to-accent-pink text-xs font-semibold grid place-items-center text-white">
+                                            {user?.name?.[0]?.toUpperCase() || 'U'}
+                                        </div>
+                                        <span>{user?.name || 'Profile'}</span>
+                                    </Link>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        className="border-white/10 bg-ink-800/70 text-slate-200 hover:bg-ink-800"
+                                        onClick={() => {
+                                            logout();
+                                            navigate('/login');
+                                        }}
+                                    >
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        Sign Out
+                                    </Button>
+                                </div>
                             </div>
                         </div>
                         {user && (
-                            <div className="hidden md:flex items-center gap-3 text-sm text-gray-500">
-                                <span className="rounded-full bg-gray-100 px-3 py-1 text-xs">
+                            <div className="hidden md:flex items-center gap-3 text-sm text-slate-400">
+                                <span className="rounded-full bg-ink-800/70 px-3 py-1 text-xs">
                                     {user.name}
                                 </span>
                                 <span>{user.email}</span>
@@ -147,8 +172,8 @@ export function AppLayout({ children }) {
                                             cn(
                                                 'flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors',
                                                 isActive
-                                                    ? 'bg-brand-dark text-white'
-                                                    : 'bg-gray-100 text-gray-600'
+                                                    ? 'bg-gradient-to-r from-accent-purple/80 to-accent-pink/80 text-white'
+                                                    : 'bg-ink-800/70 text-slate-300'
                                             )
                                         }
                                     >
@@ -157,10 +182,17 @@ export function AppLayout({ children }) {
                                     </NavLink>
                                 );
                             })}
+                            <Link
+                                to="/profile"
+                                className="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold bg-ink-800/70 text-slate-300"
+                            >
+                                <UserCircle2 className="h-4 w-4" />
+                                Profile
+                            </Link>
                         </div>
                     </header>
 
-                    <main className="px-4 py-6 md:px-8 lg:px-12">
+                    <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8 lg:px-12">
                         {children}
                     </main>
                 </div>

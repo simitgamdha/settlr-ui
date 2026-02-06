@@ -27,11 +27,11 @@ export default function ForgotPassword() {
 
     return (
         <AuthLayout>
-            <Card className="p-8 shadow-xl border-gray-100/50 backdrop-blur-sm bg-white/95">
+            <Card className="p-8 shadow-xl glass-panel text-slate-100">
                 <CardHeader className="pb-6">
                     <div className="flex flex-col space-y-2 text-center">
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Reset Password</h1>
-                        <p className="text-gray-500">
+                        <h1 className="text-3xl font-bold tracking-tight text-white">Reset Password</h1>
+                        <p className="text-slate-400">
                             We will email you a secure link to reset your password
                         </p>
                     </div>
@@ -39,11 +39,11 @@ export default function ForgotPassword() {
                 <CardContent>
                     {submitted ? (
                         <div className="space-y-4 text-center">
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-slate-300">
                                 Password reset is not available yet. Contact the administrator to regain access for
-                                <span className="font-semibold text-gray-900"> {email}</span>.
+                                <span className="font-semibold text-white"> {email}</span>.
                             </p>
-                            <Link to="/login" className="text-sm font-medium text-brand-dark hover:underline">
+                            <Link to="/login" className="text-sm font-medium text-accent-pink hover:underline">
                                 Back to login
                             </Link>
                         </div>
@@ -57,13 +57,14 @@ export default function ForgotPassword() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 error={error}
+                                className="bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                             />
-                            <Button type="submit" className="w-full">
+                            <Button type="submit" className="w-full bg-gradient-to-r from-accent-pink to-accent-purple text-white hover:opacity-90">
                                 Send Reset Link
                             </Button>
-                            <div className="text-center text-sm text-gray-500">
+                            <div className="text-center text-sm text-slate-400">
                                 Remembered your password?{' '}
-                                <Link to="/login" className="text-brand-dark font-semibold hover:underline">
+                                <Link to="/login" className="text-accent-pink font-semibold hover:underline">
                                     Back to login
                                 </Link>
                             </div>

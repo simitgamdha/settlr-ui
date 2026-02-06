@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Groups from './pages/Groups';
 import GroupDetails from './pages/GroupDetails';
 import Expenses from './pages/Expenses';
+import Profile from './pages/Profile';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PublicRoute } from './components/PublicRoute';
 
@@ -34,6 +35,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Expenses />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />

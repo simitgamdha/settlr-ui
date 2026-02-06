@@ -8,6 +8,7 @@ import { Users, ReceiptText, BadgeDollarSign } from 'lucide-react';
 import { apiClient } from '../services/api';
 import { formatCurrency, formatDate } from '../utils/format';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function GroupDetails() {
     const { groupId } = useParams();
@@ -24,11 +25,9 @@ export default function GroupDetails() {
     const [loading, setLoading] = useState(true);
     const [submittingExpense, setSubmittingExpense] = useState(false);
     const [addingMember, setAddingMember] = useState(false);
-    const [error, setError] = useState('');
 
     const loadGroupData = async () => {
         setLoading(true);
-        setError('');
         try {
             const groupList = await apiClient.get('/api/groups');
             const foundGroup = groupList?.find((item) => item.id === groupId) || groupList?.[0];
@@ -53,7 +52,7 @@ export default function GroupDetails() {
             setBalances(balanceData || []);
             setExpenses(expenseData || []);
         } catch (err) {
-            setError(err?.message || 'Unable to load group data.');
+            toast.error(err?.message || 'Unable to load group data.');
         } finally {
             setLoading(false);
         }
@@ -73,12 +72,11 @@ export default function GroupDetails() {
         if (!group) return;
 
         if (!expenseForm.amount || !expenseForm.description.trim() || !expenseForm.payerId) {
-            setError('Amount, description, and payer are required.');
+            toast.error('Amount, description, and payer are required.');
             return;
         }
 
         setSubmittingExpense(true);
-        setError('');
         try {
             await apiClient.post('/api/expenses', {
                 groupId: group.id,
@@ -88,8 +86,9 @@ export default function GroupDetails() {
             });
             setExpenseForm({ amount: '', description: '', payerId: expenseForm.payerId });
             await loadGroupData();
+            toast.success('Expense added.');
         } catch (err) {
-            setError(err?.message || 'Failed to add expense.');
+            toast.error(err?.message || 'Failed to add expense.');
         } finally {
             setSubmittingExpense(false);
         }
@@ -99,12 +98,11 @@ export default function GroupDetails() {
         event.preventDefault();
         if (!group) return;
         if (!memberEmail.trim()) {
-            setError('Member email is required.');
+            toast.error('Member email is required.');
             return;
         }
 
         setAddingMember(true);
-        setError('');
         try {
             const lookup = await apiClient.get(`/api/users/lookup?email=${encodeURIComponent(memberEmail.trim())}`);
             await apiClient.post(`/api/groups/${group.id}/members`, {
@@ -112,8 +110,9 @@ export default function GroupDetails() {
             });
             setMemberEmail('');
             await loadGroupData();
+            toast.success('Member added.');
         } catch (err) {
-            setError(err?.message || 'Failed to add member.');
+            toast.error(err?.message || 'Failed to add member.');
         } finally {
             setAddingMember(false);
         }
@@ -124,7 +123,7 @@ export default function GroupDetails() {
     if (loading) {
         return (
             <AppLayout>
-                <div className="text-sm text-gray-500">Loading group...</div>
+                <div className="text-sm text-slate-400">Loading group...</div>
             </AppLayout>
         );
     }
@@ -132,7 +131,7 @@ export default function GroupDetails() {
     if (!group) {
         return (
             <AppLayout>
-                <div className="text-sm text-gray-500">Group not found.</div>
+                <div className="text-sm text-slate-400">Group not found.</div>
             </AppLayout>
         );
     }
@@ -142,32 +141,28 @@ export default function GroupDetails() {
             <div className="space-y-8">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <p className="text-sm uppercase tracking-[0.3em] text-gray-400">Group</p>
-                        <h1 className="text-3xl font-semibold text-gray-900 font-display">
+                        <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Group</p>
+                        <h1 className="text-3xl font-semibold text-white font-display">
                             {group.name}
                         </h1>
-                        <p className="text-gray-500 mt-2">Created {formatDate(group.createdAt)}</p>
+                        <p className="text-slate-400 mt-2">Created {formatDate(group.createdAt)}</p>
                     </div>
-                    <Button variant="secondary">Settle Up</Button>
+                    <Button variant="secondary" className="border-white/10 bg-ink-800/70 text-slate-200 hover:bg-ink-800">
+                        Settle Up
+                    </Button>
                 </div>
 
-                {error && (
-                    <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                        {error}
-                    </div>
-                )}
-
                 <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                    <Card className="border-gray-100/60 shadow-sm">
+                    <Card className="glass-panel text-slate-100">
                         <CardHeader className="pb-0">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-xl font-semibold text-gray-900">Add Expense</h2>
-                                    <p className="text-sm text-gray-500">
+                                    <h2 className="text-xl font-semibold text-white">Add Expense</h2>
+                                    <p className="text-sm text-slate-400">
                                         Expenses are split equally among all group members.
                                     </p>
                                 </div>
-                                <ReceiptText className="h-5 w-5 text-gray-400" />
+                                <ReceiptText className="h-5 w-5 text-slate-400" />
                             </div>
                         </CardHeader>
                         <CardContent className="pt-5 space-y-4">
@@ -179,14 +174,15 @@ export default function GroupDetails() {
                                     placeholder="0.00"
                                     value={expenseForm.amount}
                                     onChange={handleExpenseChange}
+                                    className="bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                                 />
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Payer</label>
+                                    <label className="text-sm font-medium text-slate-300">Payer</label>
                                     <select
                                         name="payerId"
                                         value={expenseForm.payerId}
                                         onChange={handleExpenseChange}
-                                        className="h-10 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+                                        className="h-10 w-full rounded-md border border-white/10 bg-ink-800/80 px-3 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-accent-purple/60"
                                     >
                                         {memberOptions.length === 0 && (
                                             <option value="">No members</option>
@@ -204,25 +200,29 @@ export default function GroupDetails() {
                                     placeholder="Electricity bill"
                                     value={expenseForm.description}
                                     onChange={handleExpenseChange}
-                                    className="md:col-span-2"
+                                    className="md:col-span-2 bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                                 />
-                                <Button type="submit" className="md:col-span-2" isLoading={submittingExpense}>
+                                <Button
+                                    type="submit"
+                                    className="md:col-span-2 bg-gradient-to-r from-accent-pink to-accent-purple text-white hover:opacity-90"
+                                    isLoading={submittingExpense}
+                                >
                                     Add Expense
                                 </Button>
                             </form>
                         </CardContent>
                     </Card>
 
-                    <Card className="border-gray-100/60 shadow-sm">
+                    <Card className="glass-panel text-slate-100">
                         <CardHeader className="pb-0">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-xl font-semibold text-gray-900">Add Members</h2>
-                                    <p className="text-sm text-gray-500">
+                                    <h2 className="text-xl font-semibold text-white">Add Members</h2>
+                                    <p className="text-sm text-slate-400">
                                         Invite existing users by email.
                                     </p>
                                 </div>
-                                <Users className="h-5 w-5 text-gray-400" />
+                                <Users className="h-5 w-5 text-slate-400" />
                             </div>
                         </CardHeader>
                         <CardContent className="pt-5 space-y-4">
@@ -234,18 +234,24 @@ export default function GroupDetails() {
                                     placeholder="member@example.com"
                                     value={memberEmail}
                                     onChange={(event) => setMemberEmail(event.target.value)}
+                                    className="bg-ink-800/80 border-white/10 text-slate-100 placeholder:text-slate-500 focus:ring-accent-purple/60"
                                 />
-                                <Button type="submit" variant="secondary" className="w-full" isLoading={addingMember}>
+                                <Button
+                                    type="submit"
+                                    variant="secondary"
+                                    className="w-full border-white/10 bg-ink-800/70 text-slate-200 hover:bg-ink-800"
+                                    isLoading={addingMember}
+                                >
                                     Add Member
                                 </Button>
                             </form>
-                            <div className="rounded-2xl border border-gray-100 p-4">
-                                <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Members</p>
+                            <div className="rounded-2xl border border-white/10 bg-ink-800/60 p-4">
+                                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Members</p>
                                 <div className="mt-3 space-y-2">
                                     {memberOptions.map((member) => (
-                                        <div key={member.userId} className="flex items-center justify-between text-sm text-gray-700">
+                                        <div key={member.userId} className="flex items-center justify-between text-sm text-slate-200">
                                             <span>{member.name}</span>
-                                            <span className="text-xs text-gray-400">{member.email}</span>
+                                            <span className="text-xs text-slate-400">{member.email}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -255,59 +261,59 @@ export default function GroupDetails() {
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                    <Card className="border-gray-100/60 shadow-sm">
+                    <Card className="glass-panel text-slate-100">
                         <CardHeader className="pb-0">
-                            <h2 className="text-xl font-semibold text-gray-900">Expenses</h2>
-                            <p className="text-sm text-gray-500">
+                            <h2 className="text-xl font-semibold text-white">Expenses</h2>
+                            <p className="text-sm text-slate-400">
                                 All expenses created for this group.
                             </p>
                         </CardHeader>
                         <CardContent className="pt-5 space-y-3">
                             {expenses.length === 0 && (
-                                <p className="text-sm text-gray-500">No expenses yet.</p>
+                                <p className="text-sm text-slate-400">No expenses yet.</p>
                             )}
                             {expenses.map((expense) => (
-                                <div key={expense.id} className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-b-0 last:pb-0">
+                                <div key={expense.id} className="flex items-center justify-between border-b border-white/10 pb-3 last:border-b-0 last:pb-0">
                                     <div>
-                                        <p className="text-sm font-semibold text-gray-900">{expense.description}</p>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-sm font-semibold text-white">{expense.description}</p>
+                                        <p className="text-xs text-slate-400">
                                             Paid by {memberOptions.find((member) => member.userId === expense.payerId)?.name || 'Member'}
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-sm font-semibold text-gray-900">{formatCurrency(expense.amount)}</p>
-                                        <p className="text-xs text-gray-500">{formatDate(expense.createdAt)}</p>
+                                        <p className="text-sm font-semibold text-white">{formatCurrency(expense.amount)}</p>
+                                        <p className="text-xs text-slate-400">{formatDate(expense.createdAt)}</p>
                                     </div>
                                 </div>
                             ))}
                         </CardContent>
                     </Card>
 
-                    <Card className="border-gray-100/60 shadow-sm">
+                    <Card className="glass-panel text-slate-100">
                         <CardHeader className="pb-0">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-xl font-semibold text-gray-900">Balances</h2>
-                                    <p className="text-sm text-gray-500">
+                                    <h2 className="text-xl font-semibold text-white">Balances</h2>
+                                    <p className="text-sm text-slate-400">
                                         Amount owed by and to each member.
                                     </p>
                                 </div>
-                                <BadgeDollarSign className="h-5 w-5 text-gray-400" />
+                                <BadgeDollarSign className="h-5 w-5 text-slate-400" />
                             </div>
                         </CardHeader>
                         <CardContent className="pt-5 space-y-3">
                             {balances.length === 0 && (
-                                <p className="text-sm text-gray-500">No balances yet.</p>
+                                <p className="text-sm text-slate-400">No balances yet.</p>
                             )}
                             {balances.map((balance) => (
-                                <div key={balance.userId} className="flex items-center justify-between rounded-2xl border border-gray-100 p-4">
+                                <div key={balance.userId} className="flex items-center justify-between rounded-2xl border border-white/10 bg-ink-800/60 p-4">
                                     <div>
-                                        <p className="text-sm font-semibold text-gray-900">{balance.name}</p>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-sm font-semibold text-white">{balance.name}</p>
+                                        <p className="text-xs text-slate-400">
                                             Owes {formatCurrency(balance.owedByUser)} · Owed {formatCurrency(balance.owedToUser)}
                                         </p>
                                     </div>
-                                    <p className={`text-sm font-semibold ${balance.netBalance < 0 ? 'text-rose-500' : 'text-emerald-600'}`}>
+                                    <p className={`text-sm font-semibold ${balance.netBalance < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
                                         {formatCurrency(balance.netBalance)}
                                     </p>
                                 </div>
