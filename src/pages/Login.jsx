@@ -4,9 +4,11 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardHeader } from '../components/ui/Card';
 import { AuthLayout } from '../components/layouts/AuthLayout';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -37,8 +39,8 @@ export default function Login() {
 
         if (!formData.password) {
             newErrors.password = 'Password is required';
-        } else if (formData.password.length < 8) {
-            newErrors.password = 'Password must be at least 8 characters long';
+        } else if (formData.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters long';
         }
 
         setErrors(newErrors);
@@ -51,12 +53,10 @@ export default function Login() {
 
         setIsLoading(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 900));
-            console.log('Logged in:', formData);
-            navigate('/');
+            await login(formData.email, formData.password);
+            navigate('/dashboard');
         } catch (error) {
-            console.error('Login failed:', error);
-            setErrors({ root: 'Login failed. Please try again.' });
+            setErrors({ root: error?.message || 'Login failed. Please try again.' });
         } finally {
             setIsLoading(false);
         }

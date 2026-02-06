@@ -8,7 +8,6 @@ import { AuthLayout } from '../components/layouts/AuthLayout';
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -23,15 +22,7 @@ export default function ForgotPassword() {
         }
 
         setError('');
-        setIsLoading(true);
-        try {
-            await new Promise(resolve => setTimeout(resolve, 900));
-            setSubmitted(true);
-        } catch (err) {
-            setError('Request failed. Please try again.');
-        } finally {
-            setIsLoading(false);
-        }
+        setSubmitted(true);
     };
 
     return (
@@ -49,8 +40,8 @@ export default function ForgotPassword() {
                     {submitted ? (
                         <div className="space-y-4 text-center">
                             <p className="text-sm text-gray-600">
-                                If an account exists for <span className="font-semibold text-gray-900">{email}</span>,
-                                you will receive a reset link shortly.
+                                Password reset is not available yet. Contact the administrator to regain access for
+                                <span className="font-semibold text-gray-900"> {email}</span>.
                             </p>
                             <Link to="/login" className="text-sm font-medium text-brand-dark hover:underline">
                                 Back to login
@@ -67,7 +58,7 @@ export default function ForgotPassword() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 error={error}
                             />
-                            <Button type="submit" className="w-full" isLoading={isLoading}>
+                            <Button type="submit" className="w-full">
                                 Send Reset Link
                             </Button>
                             <div className="text-center text-sm text-gray-500">

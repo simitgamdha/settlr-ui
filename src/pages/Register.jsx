@@ -4,10 +4,11 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardHeader } from '../components/ui/Card';
 import { AuthLayout } from '../components/layouts/AuthLayout';
-import { apiClient } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
     const navigate = useNavigate();
+    const { register } = useAuth();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -27,11 +28,11 @@ export default function Register() {
     const validate = () => {
         const newErrors = {};
 
-        // Name: Only letters, no digits, no spaces, no special chars
+        // Name: Required and within limits
         if (!formData.name) {
             newErrors.name = 'Name is required';
-        } else if (!/^[A-Za-z]+$/.test(formData.name)) {
-            newErrors.name = 'Name must contain only letters (no spaces, numbers, or special characters)';
+        } else if (formData.name.length > 150) {
+            newErrors.name = 'Name must be 150 characters or fewer';
         }
 
         // Email: Standard email validation
@@ -41,21 +42,11 @@ export default function Register() {
             newErrors.email = 'Please enter a valid email address';
         }
 
-        // Password: Complex validation
+        // Password: Minimum length
         if (!formData.password) {
             newErrors.password = 'Password is required';
-        } else {
-            if (formData.password.length < 8) {
-                newErrors.password = 'Password must be at least 8 characters long';
-            } else if (!/[A-Z]/.test(formData.password)) {
-                newErrors.password = 'Password must contain at least one uppercase letter';
-            } else if (!/[a-z]/.test(formData.password)) {
-                newErrors.password = 'Password must contain at least one lowercase letter';
-            } else if (!/[0-9]/.test(formData.password)) {
-                newErrors.password = 'Password must contain at least one number';
-            } else if (!/[!@#$%^&*]/.test(formData.password)) {
-                newErrors.password = 'Password must contain at least one special character (!@#$%^&*)';
-            }
+        } else if (formData.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters long';
         }
 
         setErrors(newErrors);
@@ -68,14 +59,10 @@ export default function Register() {
 
         setIsLoading(true);
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            // await apiClient.post('/auth/register', formData);
-            console.log('Registered:', formData);
-            navigate('/login');
+            await register(formData.name, formData.email, formData.password);
+            navigate('/dashboard');
         } catch (error) {
-            console.error('Registration failed:', error);
-            setErrors({ root: 'Registration failed. Please try again.' });
+            setErrors({ root: error?.message || 'Registration failed. Please try again.' });
         } finally {
             setIsLoading(false);
         }
