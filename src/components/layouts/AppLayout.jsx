@@ -7,9 +7,7 @@ import {
     ReceiptText,
     CircleDollarSign,
     LogOut,
-    Bell,
     UserCircle2,
-    Search,
     BellDot,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -99,7 +97,7 @@ export function AppLayout({ children }) {
 
                 <div className="flex-1 flex flex-col h-full">
                     <header className="sticky top-0 z-20 flex flex-col gap-4 border-b border-white/10 bg-ink-900/80 px-4 py-4 backdrop-blur-md md:px-8">
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
                             <div className="flex items-center gap-3 md:hidden">
                                 <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-accent-purple to-accent-pink text-white grid place-items-center">
                                     <CircleDollarSign className="h-5 w-5" />
@@ -109,17 +107,7 @@ export function AppLayout({ children }) {
                                     <p className="text-sm font-semibold text-white">Expense Hub</p>
                                 </div>
                             </div>
-                            <div className="hidden md:flex flex-1 items-center gap-3 max-w-md">
-                                <div className="relative w-full">
-                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search expenses, groups, members"
-                                        className="h-10 w-full rounded-full bg-ink-800/80 border border-white/10 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-accent-purple/60"
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 md:ml-auto">
                                 <button className="hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-ink-800/70 border border-white/10 text-slate-300 hover:text-white">
                                     <BellDot className="h-5 w-5" />
                                 </button>
@@ -136,7 +124,6 @@ export function AppLayout({ children }) {
                                         <div className="h-7 w-7 rounded-full bg-gradient-to-br from-accent-blue to-accent-pink text-xs font-semibold grid place-items-center text-white">
                                             {user?.name?.[0]?.toUpperCase() || 'U'}
                                         </div>
-                                        <span>{user?.name || 'Profile'}</span>
                                     </Link>
                                     <Button
                                         variant="secondary"
@@ -153,14 +140,6 @@ export function AppLayout({ children }) {
                                 </div>
                             </div>
                         </div>
-                        {user && (
-                            <div className="hidden md:flex items-center gap-3 text-sm text-slate-400">
-                                <span className="rounded-full bg-ink-800/70 px-3 py-1 text-xs">
-                                    {user.name}
-                                </span>
-                                <span>{user.email}</span>
-                            </div>
-                        )}
                         <div className="flex md:hidden gap-2">
                             {navItems.map((item) => {
                                 const Icon = item.icon;
