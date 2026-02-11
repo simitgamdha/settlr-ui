@@ -9,6 +9,8 @@ import {
     LogOut,
     UserCircle2,
     BellDot,
+    Moon,
+    Sun,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useEffect, useState } from 'react';
@@ -25,6 +27,7 @@ export function AppLayout({ children }) {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [summary, setSummary] = useState(null);
+    const [theme, setTheme] = useState(() => localStorage.getItem('settlr-theme') || 'dark');
 
     useEffect(() => {
         const loadSummary = async () => {
@@ -42,6 +45,18 @@ export function AppLayout({ children }) {
     const netBalance = summary
         ? (summary.totalOwedToUser ?? 0) - (summary.totalOwedByUser ?? 0)
         : 0;
+
+    useEffect(() => {
+        const isLight = theme === 'light';
+        document.documentElement.classList.toggle('theme-light', isLight);
+        document.body.classList.toggle('theme-light', isLight);
+        document.documentElement.dataset.theme = theme;
+        localStorage.setItem('settlr-theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    };
 
     return (
         <div className="h-screen app-bg text-slate-100 overflow-hidden">
@@ -108,6 +123,18 @@ export function AppLayout({ children }) {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3 md:ml-auto">
+                                <button
+                                    type="button"
+                                    aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+                                    className="flex h-10 w-10 items-center justify-center rounded-full bg-ink-800/70 border border-white/10 text-slate-300 hover:text-white"
+                                    onClick={toggleTheme}
+                                >
+                                    {theme === 'dark' ? (
+                                        <Sun className="h-5 w-5" />
+                                    ) : (
+                                        <Moon className="h-5 w-5" />
+                                    )}
+                                </button>
                                 <button className="hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-ink-800/70 border border-white/10 text-slate-300 hover:text-white">
                                     <BellDot className="h-5 w-5" />
                                 </button>

@@ -37,3 +37,84 @@
         box-shadow: 0 20px 50px rgba(7, 7, 12, 0.45);
     }
 }
+
+[data-theme='light'] body,
+.theme-light body,
+body.theme-light {
+    background: #f4f7ff;
+    color: #0f172a;
+}
+
+[data-theme='light'] .app-bg,
+.theme-light .app-bg,
+body.theme-light .app-bg {
+    background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(124, 155, 255, 0.2), transparent 60%),
+        radial-gradient(900px 600px at 85% 10%, rgba(255, 106, 167, 0.12), transparent 55%),
+        #f4f7ff;
+}
+
+[data-theme='light'] .glass-panel,
+.theme-light .glass-panel,
+body.theme-light .glass-panel {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 255, 0.9));
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme='light'] .bg-ink-900\/90,
+[data-theme='light'] .bg-ink-900\/80,
+[data-theme='light'] .bg-ink-800\/80,
+[data-theme='light'] .bg-ink-800\/70,
+[data-theme='light'] .bg-ink-800\/60,
+.theme-light .bg-ink-900\/90,
+.theme-light .bg-ink-900\/80,
+.theme-light .bg-ink-800\/80,
+.theme-light .bg-ink-800\/70,
+.theme-light .bg-ink-800\/60,
+body.theme-light .bg-ink-900\/90,
+body.theme-light .bg-ink-900\/80,
+body.theme-light .bg-ink-800\/80,
+body.theme-light .bg-ink-800\/70,
+body.theme-light .bg-ink-800\/60 {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+[data-theme='light'] .border-white\/10,
+.theme-light .border-white\/10,
+body.theme-light .border-white\/10 {
+    border-color: rgba(148, 163, 184, 0.28) !important;
+}
+
+[data-theme='light'] .text-white,
+.theme-light .text-white,
+body.theme-light .text-white {
+    color: #0f172a !important;
+}
+
+[data-theme='light'] .text-slate-100,
+[data-theme='light'] .text-slate-200,
+[data-theme='light'] .text-slate-300,
+.theme-light .text-slate-100,
+.theme-light .text-slate-200,
+.theme-light .text-slate-300,
+body.theme-light .text-slate-100,
+body.theme-light .text-slate-200,
+body.theme-light .text-slate-300 {
+    color: #334155 !important;
+}
+
+[data-theme='light'] .text-slate-400,
+[data-theme='light'] .text-slate-500,
+.theme-light .text-slate-400,
+.theme-light .text-slate-500,
+body.theme-light .text-slate-400,
+body.theme-light .text-slate-500 {
+    color: #64748b !important;
+}
+
+[data-theme='light'] .hover\:text-white:hover,
+.theme-light .hover\:text-white:hover,
+body.theme-light .hover\:text-white:hover {
+    color: #0f172a !important;
+}
